@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitcredentials
+type: Opaque
+data:
+  username: cm1hY2hhLWRlYnVn
+  password: Z2hwX1dFVWgzRkFSVG13NGVWVmpLYzJ6ajZFRVoya0pTbjFGWU03QQ==  
