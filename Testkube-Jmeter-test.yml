@@ -1,0 +1,30 @@
+apiVersion: testworkflows.testkube.io/v1
+kind: TestWorkflow
+metadata:
+  name: dummyjmetertest
+spec:
+  content:
+    git:
+      uri: "https://github.com/rmacha-debug/Jmeter-dynatrace-integration.git"
+      revision: main
+      paths:
+      - dummyrestapi.jmx
+      usernameFrom:
+         secretKeyRef:
+          name: gitcredentials
+          key: username
+      tokenFrom:
+        secretKeyRef:
+          name: gitcredentials
+          key: password  
+  container:
+        workingDir: /data/repo
+  steps:
+  - name: Run tests
+    shell: "tree /data/repo"
+    shell: jmeter -n -t dummyrestapi.jmx -j /data/artifacts/jmeter.log -o /data/artifacts/report -l /data/artifacts/jtl-report.jtl -e
+    container:
+      image: anasoid/jmeter:5.6-plugins-21-jre
+    artifacts:
+      paths:
+      - '/data/artifacts/**/*'
