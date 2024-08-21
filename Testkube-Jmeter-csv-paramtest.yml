@@ -1,0 +1,32 @@
+apiVersion: testworkflows.testkube.io/v1
+kind: TestWorkflow
+metadata:
+  name: csvparamjmetertest
+spec:
+  content:
+    git:
+      uri: "https://github.com/rmacha-debug/Jmeter-dynatrace-integration.git"
+      revision: main
+      paths:
+      - CSVSample.jmx
+      - CSVSample_actions.csv
+      - CSVSample_user.csv
+      usernameFrom:
+         secretKeyRef:
+          name: gitcredentials
+          key: username
+      tokenFrom:
+        secretKeyRef:
+          name: gitcredentials
+          key: password  
+  container:
+        workingDir: /data/repo
+  steps:
+  - name: Run tests
+    shell: "tree /data/repo"
+    shell: jmeter -n -t CSVSample.jmx -J ConfigOne.datadir=CSVSample_user.csv -j /data/artifacts/jmeter.log -o /data/artifacts/report -l /data/artifacts/jtl-report.jtl -e
+    container:
+      image: anasoid/jmeter:5.6-plugins-21-jre
+    artifacts:
+      paths:
+      - '/data/artifacts/**/*'
